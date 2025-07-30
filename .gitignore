@@ -1,0 +1,52 @@
+# Build results
+bin/
+obj/
+out/
+*.log
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# VSCode
+.vscode/
+.history/
+
+# Dotnet
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# ASP.NET Core secrets
+secrets.json
+
+# Docker
+*.pid
+*.seed
+docker-compose.override.yml
+
+# Database data
+mysql_data/
+*.db
+
+# Logs
+logs/
+*.log
+*.sql
+
+# System files
+.DS_Store
+Thumbs.db
+
+# NuGet
+*.nupkg
+.nuget/
+
+# Auto-generated files
+Generated_Code/
+
+# Others
+*.bak
+*.tmp
