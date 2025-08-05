@@ -1,0 +1,16 @@
+global using AutoFactAI;
+global using AutoFactCore.Interfaces;
+global using AutoFactMail.Interfaces;
+global using AutoFactOCR;
+global using AutoFactBDD.Mappers;
+global using AutoFactBDD.Repositories;
+global using AutoFactConsole;
+global using AutoFactCore.Entities;
+global using AutoFactCore.Helpers;
+global using AutoFactCore.UseCases;
+global using AutoFactLogging;
+global using AutoFactMail;
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.Extensions.DependencyInjection;
+global using Microsoft.Extensions.Hosting;
+global using Microsoft.Extensions.Configuration;

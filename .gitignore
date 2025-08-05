@@ -50,3 +50,6 @@ Generated_Code/
 # Others
 *.bak
 *.tmp
+
+# Application configuration
+appsettings.*.json
