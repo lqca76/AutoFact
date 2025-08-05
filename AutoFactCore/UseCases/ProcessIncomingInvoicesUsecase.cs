@@ -105,7 +105,7 @@ public class ProcessIncomingInvoicesUsecase(
         }
         catch (Exception ex)
         {
-            _logService.LogError(ex);
+            _logService.LogError($"[CORE ERROR] Error while processing the invoice {invoice.Number} : {ex.Message}");
             invoice.Status = InvoiceStatus.Error;
         }
 

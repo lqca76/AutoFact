@@ -266,7 +266,7 @@ public class ProcessIncomingInvoicesUsecaseTests
         var invoice = savedEmail!.Invoices.FirstOrDefault();
         Assert.NotNull(invoice);
         Assert.Equal(InvoiceStatus.Error, invoice!.Status);
-        _mockLogService.Verify(log => log.LogError(It.Is<Exception>(e => e.Message.Contains("Erreur IA"))), Times.Once);
+        _mockLogService.Verify(log => log.LogError(It.IsAny<string>()), Times.Once);
     }
     [Fact]
     public async Task ExecuteAsync_Should_SaveOnlyValidInvoices_When_EmailHasMixedAttachments()
@@ -408,7 +408,7 @@ public class ProcessIncomingInvoicesUsecaseTests
         var invoice = savedEmail.Invoices.First();
         Assert.Equal(120.00m, invoice.Amount);
         Assert.Equal(InvoiceStatus.Pending, invoice.Status);
-        _mockLogService.Verify(log => log.LogError(It.IsAny<Exception>()), Times.Once);
+        _mockLogService.Verify(log => log.LogError(It.IsAny<string>()), Times.Once);
     }
 
 

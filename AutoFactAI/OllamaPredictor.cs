@@ -45,7 +45,7 @@ public class OllamaPredictor : IAIService
         }
         catch (Exception ex)
         {
-            _logService.LogError(ex);
+            _logService.LogError($"[AI ERROR] Unable to predict the department : {ex.Message}");
             return null;
         }
     }

@@ -14,6 +14,6 @@ public interface ILogService
     /// <summary>
     /// Logs an exception as an error, including its message and stack trace.
     /// </summary>
-    /// <param name="ex">The exception to be logged.</param>
-    void LogError(Exception ex);
+    /// <param name="message">The message to be logged.</param>
+    void LogError(string message);
 }
