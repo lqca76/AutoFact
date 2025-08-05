@@ -9,10 +9,10 @@ public class OllamaPredictor : IAIService
     private readonly string _model;
     private readonly ILogService _logService;
 
-    public OllamaPredictor(OllamaApiClient ollama, string model, ILogService logService)
+    public OllamaPredictor(IAIConfiguration configuration, ILogService logService)
     {
-        _ollama = ollama;
-        _model = model;
+        _ollama = new(baseUri: new Uri(configuration.AIUrl));
+        _model = configuration.AIModel;
         _logService = logService;
     }
     /// <summary>
