@@ -1,15 +1,13 @@
-﻿using System.Diagnostics;
-
-namespace AutoFactOCR;
+﻿namespace AutoFactOCR;
 
 /// <summary>
 /// Uses a Python script to perform OCR on PDF files using EasyOCR and returns the extracted text.
 /// </summary>
 public class PythonOCRService(
-    string pythonPath
+    IOCRConfiguration configuration
 ) : IOCRService
 {
-    private readonly string _pythonPath = pythonPath;
+    private readonly string _pythonPath = configuration.PythonPath;
     private readonly string _scriptPath = Path.Combine(AppContext.BaseDirectory, "OCR", "Scripts", "ocr_pdf.py");
 
     /// <inheritdoc />
