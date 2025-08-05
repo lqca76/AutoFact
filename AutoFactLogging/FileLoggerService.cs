@@ -19,11 +19,11 @@ public class FileLoggerService : ILogService
         File.AppendAllText(filePath, content.Trim());
     }
 
-    public void LogError(Exception ex)
+    public void LogError(string message)
     {
         string filePath = EnsureFileExists(_errorFolder);
         DateTime now = DateTime.UtcNow;
-        string content = $"[{now:dd/MM/yyyy HH:mm:ss}] Error : {ex.Message}";
+        string content = $"[{now:dd/MM/yyyy HH:mm:ss}] {message}";
         File.AppendAllText(filePath, content);
     }
 
