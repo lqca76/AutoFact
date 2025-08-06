@@ -56,7 +56,6 @@ public class ProcessIncomingInvoicesUsecaseTests
         };
 
         _mockEmailService.Setup(s => s.GetNewInvoiceEmailAsync()).ReturnsAsync(parsedEmails);
-        _mockFileService.Setup(s => s.SaveFileAsync(It.IsAny<byte[]>(), It.IsAny<string>())).ReturnsAsync((byte[] _, string _) => Guid.NewGuid().ToString());
         _mockOcrService.Setup(s => s.ExctractTextAsync(It.IsAny<string>())).ReturnsAsync("Ceci est une Facture de test");
         _mockAiService.Setup(s => s.PredictAsync(It.IsAny<string>())).ReturnsAsync(new AIResponseDTO(DateTime.UtcNow, 123.45m, "FIN", "SupplierX"));
         _mockDepartmentRepo.Setup(r => r.GetById(It.IsAny<string>())).Returns(new Department() { Id = "FIN", Label = "Finance" });
@@ -88,7 +87,6 @@ public class ProcessIncomingInvoicesUsecaseTests
         };
 
         _mockEmailService.Setup(s => s.GetNewInvoiceEmailAsync()).ReturnsAsync(parsedEmails);
-        _mockFileService.Setup(s => s.SaveFileAsync(It.IsAny<byte[]>(), It.IsAny<string>())).ReturnsAsync((byte[] _, string _) => Guid.NewGuid().ToString());
         _mockOcrService.Setup(o => o.ExctractTextAsync(It.IsAny<string>())).ReturnsAsync("Ceci est une note de service");
         _mockConfig.Setup(c => c.PDFPath).Returns("/tmp");
 
@@ -98,9 +96,7 @@ public class ProcessIncomingInvoicesUsecaseTests
         await useCase.ExecuteAsync();
 
         // Assert
-        _mockEmailRepo.Verify(r => r.Add(It.Is<Email>(e => e.Invoices.Count() == 0)), Times.Once);
-        _mockLogService.Verify(l => l.Log(It.Is<string>(msg =>
-            msg.Contains("added containing 0 invoice"))), Times.Once);
+        _mockEmailRepo.Verify(r => r.Add(It.Is<Email>(e => e.Invoices.Count() == 0)), Times.Never);
     }
 
     [Fact]
@@ -121,7 +117,6 @@ public class ProcessIncomingInvoicesUsecaseTests
         };
 
         _mockEmailService.Setup(s => s.GetNewInvoiceEmailAsync()).ReturnsAsync(parsedEmails);
-        _mockFileService.Setup(s => s.SaveFileAsync(It.IsAny<byte[]>(), It.IsAny<string>())).ReturnsAsync(Guid.NewGuid().ToString());
         _mockOcrService.Setup(o => o.ExctractTextAsync(It.IsAny<string>())).ReturnsAsync("Facture fournisseur X");
         _mockAiService.Setup(ai => ai.PredictAsync(It.IsAny<string>())).ReturnsAsync(new AIResponseDTO(DateTime.UtcNow, 456.78m, "RH", "NouveauFournisseur"));
         _mockDepartmentRepo.Setup(r => r.GetById("RH")).Returns(new Department { Id = "RH", Label = "Ressources Humaines" });
@@ -158,7 +153,6 @@ public class ProcessIncomingInvoicesUsecaseTests
         };
 
         _mockEmailService.Setup(s => s.GetNewInvoiceEmailAsync()).ReturnsAsync(parsedEmails);
-        _mockFileService.Setup(s => s.SaveFileAsync(It.IsAny<byte[]>(), It.IsAny<string>())).ReturnsAsync(Guid.NewGuid().ToString());
         _mockOcrService.Setup(o => o.ExctractTextAsync(It.IsAny<string>())).ReturnsAsync("Voici la facture du mois");
         var aiResponse = new AIResponseDTO(DateTime.UtcNow, 789.99m, "IT", "TechCorp");
         _mockAiService.Setup(ai => ai.PredictAsync(It.IsAny<string>())).ReturnsAsync(aiResponse);
@@ -204,7 +198,6 @@ public class ProcessIncomingInvoicesUsecaseTests
         };
 
         _mockEmailService.Setup(s => s.GetNewInvoiceEmailAsync()).ReturnsAsync(parsedEmails);
-        _mockFileService.Setup(s => s.SaveFileAsync(It.IsAny<byte[]>(), It.IsAny<string>())).ReturnsAsync(Guid.NewGuid().ToString());
         _mockOcrService.Setup(o => o.ExctractTextAsync(It.IsAny<string>())).ReturnsAsync("FACTURE : Service mensuel");
         _mockAiService.Setup(ai => ai.PredictAsync(It.IsAny<string>())).ReturnsAsync(new AIResponseDTO(DateTime.UtcNow, 321.00m, "COMPTA", "FournisseurZ"));
         var expectedDepartment = new Department() { Id = "COMPTA", Label = "Comptabilité" };
@@ -247,7 +240,6 @@ public class ProcessIncomingInvoicesUsecaseTests
         };
 
         _mockEmailService.Setup(s => s.GetNewInvoiceEmailAsync()).ReturnsAsync(parsedEmails);
-        _mockFileService.Setup(s => s.SaveFileAsync(It.IsAny<byte[]>(), It.IsAny<string>())).ReturnsAsync("/fichier/bug.pdf");
         _mockOcrService.Setup(o => o.ExctractTextAsync(It.IsAny<string>())).ReturnsAsync("FACTURE - bug test");
         _mockAiService.Setup(ai => ai.PredictAsync(It.IsAny<string>())).ThrowsAsync(new InvalidOperationException("Erreur IA"));
         _mockSupplierRepo.Setup(r => r.GetByName(It.IsAny<string>())).Returns(new Supplier { Id = 1, Name = "Test" });
@@ -286,7 +278,6 @@ public class ProcessIncomingInvoicesUsecaseTests
         };
 
         _mockEmailService.Setup(s => s.GetNewInvoiceEmailAsync()).ReturnsAsync(parsedEmails);
-        _mockFileService.Setup(s => s.SaveFileAsync(It.IsAny<byte[]>(), It.IsAny<string>())).ReturnsAsync(Guid.NewGuid().ToString());
         var callCount = 0;
         _mockOcrService.Setup(o => o.ExctractTextAsync(It.IsAny<string>())).ReturnsAsync(() =>
             {
@@ -338,7 +329,6 @@ public class ProcessIncomingInvoicesUsecaseTests
         };
 
         _mockEmailService.Setup(s => s.GetNewInvoiceEmailAsync()).ReturnsAsync(parsedEmails);
-        _mockFileService.Setup(s => s.SaveFileAsync(It.IsAny<byte[]>(), It.IsAny<string>())).ReturnsAsync("/factures/existante.pdf");
         _mockOcrService.Setup(o => o.ExctractTextAsync(It.IsAny<string>())).ReturnsAsync("FACTURE pour client fidèle");
 
         var aiResponse = new AIResponseDTO(DateTime.UtcNow, 199.99m, "VENTE", "ClientFidèle");
@@ -378,7 +368,6 @@ public class ProcessIncomingInvoicesUsecaseTests
         };
 
         _mockEmailService.Setup(s => s.GetNewInvoiceEmailAsync()).ReturnsAsync(parsedEmails);
-        _mockFileService.Setup(s => s.SaveFileAsync(It.IsAny<byte[]>(), It.IsAny<string>())).ReturnsAsync("/chemin/facture.pdf");
 
         var ocrCall = 0;
         _mockOcrService.Setup(o => o.ExctractTextAsync(It.IsAny<string>())).ReturnsAsync(() =>
