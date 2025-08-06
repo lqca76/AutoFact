@@ -39,6 +39,7 @@ public class ProcessIncomingInvoicesUsecase(
     {
         // Retrieve the new email containing invoices.
         var emails = await _emailsService.GetNewInvoiceEmailAsync();
+        _logService.Log($"[INFO] {emails.Count()} new emails to analyze.");
         foreach (var email in emails)
         {
             if (email.Attachments.Count == 0)
@@ -51,9 +52,11 @@ public class ProcessIncomingInvoicesUsecase(
                 if (invoice is not null)
                     invoices.Add(invoice);
             }
-
+            // Don't add email without invoices.
+            if (invoices.Count == 0)
+                continue;
             // Create email in database.
-            Email e = new()
+                Email e = new()
             {
                 Id = email.Id,
                 SenderAddress = email.SenderAddress,
@@ -62,7 +65,7 @@ public class ProcessIncomingInvoicesUsecase(
                 Invoices = invoices
             };
             _emailsRepository.Add(e);
-            _logService.Log($"Email from {e.SenderAddress} added containing {e.Invoices.Count()} invoice(s).");
+            _logService.Log($"[CORE INFO] Email from {e.SenderAddress} added containing {e.Invoices.Count()} invoice(s).");
         }
     }
 
@@ -73,8 +76,11 @@ public class ProcessIncomingInvoicesUsecase(
     }
     private async Task<Invoice?> ProcessAttachmentAsync(EmailAttachmentDTO attachment)
     {
-        // Initialize invoice from attachment.
-        string folder = _configuration.PDFPath;
+        var invoice = new Invoice();
+        try
+        {
+            // Initialize invoice from attachment.
+            string folder = _configuration.PDFPath;
             string path = Path.Combine(folder, attachment.Name);
             await _fileService.SaveFileAsync(attachment.Content, path);
             invoice.Number = attachment.Name;
@@ -102,7 +108,7 @@ public class ProcessIncomingInvoicesUsecase(
         }
         catch (Exception ex)
         {
-            _logService.LogError($"[CORE ERROR] Error while processing the invoice {invoice.Number} : {ex.Message}");
+            _logService.LogError($"[CORE ERROR] Error while processing the invoice {attachment.Name} : {ex.Message}");
             invoice.Status = InvoiceStatus.Error;
         }
 
