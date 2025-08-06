@@ -39,7 +39,7 @@ public class FileLoggerService : ILogService
     private static void WriteFile(string filePath, string message)
     {
         DateTime now = DateTime.UtcNow;
-        string content = $"[{now:dd/MM/yyyy HH:mm:ss}] {message}";
+        string content = $"\n[{now:dd/MM/yyyy HH:mm:ss}] {message}";
         File.AppendAllText(filePath, content);
     }
 }
