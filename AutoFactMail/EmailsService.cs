@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using AutoFactMail.Interfaces;
 using SystemTask = System.Threading.Tasks.Task;
 
@@ -39,43 +40,29 @@ public class EmailsService : IEmailService
             // Read the last recovery date.
             DateTime lastFetch = ReadLastFetchDate();
 
-            // Create the filters.
-            var filters = new SearchFilter.SearchFilterCollection(LogicalOperator.And, [
-                new SearchFilter.IsGreaterThanOrEqualTo(ItemSchema.DateTimeReceived, lastFetch),
-            new SearchFilter.IsEqualTo(ItemSchema.HasAttachments, true)
-            ]);
-
-
-            // Recover all the mails.
-            var emails = new List<Item>();
-            var view = new ItemView(50);
-            FindItemsResults<Item> findResults;
-            do
-            {
-                findResults = _service.FindItems(WellKnownFolderName.Inbox, filters, view);
-                emails.AddRange(findResults.Items);
-                view.Offset += 50;
-            } while (findResults.MoreAvailable);
+            // Recover all new mails.
+            var emails = GetNewEmailSince(lastFetch);
 
             DateTime maxDate = lastFetch;
 
-            foreach (var item in emails)
+            foreach (var email in emails)
             {
-                if (item is not EmailMessage email) continue;
                 // Load the email.
-                await SystemTask.Run(email.Load);
+                try {
+                    await SystemTask.Run(email.Load);
+                }
+                catch (Exception loadEx) {
+                    _logService.LogError($"[EWS] Failed to load email (ID: {email?.Id?.UniqueId ?? "unknown"}): {loadEx.Message}");
+                    continue;
+                }
 
                 var attachments = new List<EmailAttachmentDTO>();
 
                 foreach (var att in email.Attachments.OfType<FileAttachment>())
                 {
-                    // Check if the attachment is a PDF.
-                    if (att.FileName.EndsWith(".pdf", StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        // Load the file.
-                        await SystemTask.Run(att.Load);
-                        attachments.Add(new(att.Name, att.Content));
-                    }
+                    var attachment = await GetEmailAttachmentDTO(att, email.Id.UniqueId);
+                    if (attachment is not null)
+                        attachments.Add(attachment);
                 }
 
                 // Add the result to the emails' list.
@@ -98,7 +85,61 @@ public class EmailsService : IEmailService
             return result;
         }
         catch (Exception ex) {
-            _logService.LogError($"[EWS ERROR] Failed to fetch emails: {ex.Message}");
+            _logService.LogError($"[EWS FATAL] Unexpected error during email fetch: {ex.Message}");
+            return [];
+        }
+    }
+
+    private async Task<EmailAttachmentDTO?> GetEmailAttachmentDTO(FileAttachment att, string? emailId)
+    {
+        try
+        {
+            await SystemTask.Run(att.Load);
+            string name = att.Name;
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                _logService.Log($"[EWS] Skipping unnamed attachment (Email ID: {emailId ?? "unknown"})");
+                return null;
+            }
+            // Check if the attachment is a PDF.
+            if (name.EndsWith(".pdf", StringComparison.InvariantCultureIgnoreCase))
+            {
+                // Load the file.
+                return new(name, att.Content);
+            }
+        }
+        catch (Exception ex)
+        {
+            _logService.LogError($"[EWS ERROR] Failed to load attachment '{att.Name}' (Email ID: {emailId ?? "unknown"}): {ex.Message}");
+        }
+        return null;
+    }
+
+    private List<EmailMessage> GetNewEmailSince(DateTime since)
+    {
+        try
+        {
+            var emails = new List<EmailMessage>();
+            // Create the filters.
+            var filters = new SearchFilter.SearchFilterCollection(LogicalOperator.And, [
+                new SearchFilter.IsGreaterThanOrEqualTo(ItemSchema.DateTimeReceived, since),
+            new SearchFilter.IsEqualTo(ItemSchema.HasAttachments, true)
+            ]);
+            var view = new ItemView(50);
+            FindItemsResults<Item> findResults;
+            do
+            {
+                findResults = _service.FindItems(WellKnownFolderName.Inbox, filters, view);
+                var result = findResults.Items.OfType<EmailMessage>();
+                emails.AddRange(result);
+                view.Offset += 50;
+            } while (findResults.MoreAvailable);
+            return emails;
+        }
+        catch (Exception ex)
+        {
+
+            _logService.LogError($"[EWS ERROR] Failed to search for new emails since {since:o}: {ex.Message}");
             return [];
         }
     }
