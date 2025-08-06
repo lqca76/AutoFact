@@ -12,5 +12,5 @@ public interface IFileService
     /// <param name="content">The binary content of the file.</param>
     /// <param name="filePath">The full path (including filename) where the file should be saved.</param>
     /// <returns>A task containing the full path to the saved file.</returns>
-    Task<string> SaveFileAsync(byte[] content, string filePath);
+    Task SaveFileAsync(byte[] content, string filePath);
 }

@@ -75,14 +75,11 @@ public class ProcessIncomingInvoicesUsecase(
     {
         // Initialize invoice from attachment.
         string folder = _configuration.PDFPath;
-        string path = await _fileService.SaveFileAsync(attachment.Content, folder);
-        var invoice = new Invoice
-        {
-            Number = attachment.Name,
-            FilePath = path
-        };
-        try
-        {
+            string path = Path.Combine(folder, attachment.Name);
+            await _fileService.SaveFileAsync(attachment.Content, path);
+            invoice.Number = attachment.Name;
+            invoice.FilePath = path;
+
             // Extract text from the PDF.
             string pdfContent = await _ocrService.ExctractTextAsync(invoice.FilePath)
                 ?? throw new OCRExtractionFailedException(invoice.FilePath);

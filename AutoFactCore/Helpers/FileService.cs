@@ -2,11 +2,27 @@ namespace AutoFactCore.Helpers;
 
 public class FileService : IFileService
 {
-    public async Task<string> SaveFileAsync(byte[] content, string filePath)
+    private readonly ILogService _logService;
+
+    public FileService(ILogService logService)
     {
-        if (!File.Exists(filePath))
-            File.Create(filePath);
-        await File.WriteAllBytesAsync(filePath, content);
-        return filePath;
+        _logService = logService;
+    }
+
+    public async Task SaveFileAsync(byte[] content, string filePath)
+    {
+        try
+        {
+            if (!File.Exists(filePath))
+            {
+                var stream = File.Create(filePath);
+                stream.Close();
+            }
+            await File.WriteAllBytesAsync(filePath, content);
+        }
+        catch (Exception ex)
+        {
+            _logService.LogError($"[FILE ERROR] Unable to create file  '{filePath}' {ex.Message} ");
+        }
     }
 }
