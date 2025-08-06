@@ -1,4 +1,6 @@
-﻿var host = Host.CreateDefaultBuilder(args)
+﻿using Microsoft.Extensions.Logging;
+
+var host = Host.CreateDefaultBuilder(args)
     .ConfigureAppConfiguration((context, config) =>
     {
         config.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
@@ -17,16 +19,22 @@
         services.AddSingleton<IEmailService, EmailsService>();
         services.AddSingleton<IOCRService, PythonOCRService>();
         services.AddSingleton<IAIService, OllamaPredictor>();
-        services.AddSingleton<ILogService>(_ => new FileLoggerService(config.LogFolder, config.ErrorLogFolder));
+        // services.AddSingleton<ILogService>(_ => new FileLoggerService(config.LogFolder, config.ErrorLogFolder));
+        services.AddSingleton<ILogService, ConsoleLogService>();
         services.AddSingleton<IFileService, FileService>();
 
         // Database Context
         services.AddDbContext<AutoFactBDD.AutoFactDbContext>(options =>
+        {
             options.UseMySql(
                 config.ConnectionString,
                 new MySqlServerVersion(new Version(8, 0, 34))
-            )
-        );
+            );
+
+            // Disable logs.
+            options.LogTo(_ => { }, LogLevel.None);
+
+        });
 
         // Repositories & Mappers
         services.AddSingleton<ISupplierRepository, SuppliersRepository>();
@@ -35,7 +43,7 @@
         services.AddTransient<IMapper<Email, AutoFactBDD.Entities.Email>, EmailsMapper>();
         services.AddSingleton<IRepository<Department, string>, DepartmentsRepository>();
         services.AddTransient<IMapper<Department, AutoFactBDD.Entities.Department>, DepartmentMapper>();
-        services.AddTransient<IMapper<Invoice, AutoFactBDD.Entities.Invoice>, InvocicesMapper>();
+        services.AddTransient<IInvoiceMapper, InvocicesMapper>();
 
         // UseCases
         services.AddTransient<IProcessIncomingInvoicesUsecase, ProcessIncomingInvoicesUsecase>();
@@ -43,3 +51,7 @@
     }).Build();
 
 var usecase = host.Services.GetRequiredService<IProcessIncomingInvoicesUsecase>();
+
+Console.WriteLine("Début du processus de récupération des mails.");
+await usecase.ExecuteAsync();
+Console.WriteLine("Tache terminée.");
