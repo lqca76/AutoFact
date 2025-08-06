@@ -4,11 +4,13 @@
 /// Uses a Python script to perform OCR on PDF files using EasyOCR and returns the extracted text.
 /// </summary>
 public class PythonOCRService(
-    IOCRConfiguration configuration
+    IOCRConfiguration configuration,
+    ILogService logService
 ) : IOCRService
 {
     private readonly string _pythonPath = configuration.PythonPath;
-    private readonly string _scriptPath = Path.Combine(AppContext.BaseDirectory, "OCR", "Scripts", "ocr_pdf.py");
+    private readonly string _scriptPath = configuration.ScriptPath;
+    private readonly ILogService _logService = logService;
 
     /// <inheritdoc />
     public async Task<string?> ExctractTextAsync(string filePath)
@@ -23,7 +25,7 @@ public class PythonOCRService(
                 StartInfo = new ProcessStartInfo
                 {
                     FileName = _pythonPath,
-                    Arguments = $"'{_scriptPath}'  '{filePath}' --out {outputFile}",
+                    Arguments = $"\"{_scriptPath}\" \"{filePath}\" --out \"{outputFile}\"",
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
                     UseShellExecute = false,
@@ -31,21 +33,30 @@ public class PythonOCRService(
                 }
             };
 
-            // Launch process and wait for its ending.
+            // Launch process 
             process.Start();
+            // Read stderr and stdout.
+            var stderr = await process.StandardError.ReadToEndAsync();
+            var stdout = await process.StandardOutput.ReadToEndAsync();
+
+            // Waiting for process to exit.
             await process.WaitForExitAsync();
 
             // Return null in case of process failed.
             if (process.ExitCode != 0)
+            {
+                _logService.LogError($"OCR Process exited with status {process.ExitCode} : {stderr}");
                 return null;
+            }
 
             // Otherwise, read the content of the generated file.
             string ocrContent = File.ReadAllText(outputFile);
             return ocrContent;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
             // Return null on any exception.
+            _logService.LogError($"[OCR ERROR] Error while processing OCR : {ex.Message}");
             return null;
         }
     }
