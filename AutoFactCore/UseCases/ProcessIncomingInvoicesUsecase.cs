@@ -37,6 +37,7 @@ public class ProcessIncomingInvoicesUsecase(
     /// </summary>
     public async Task ExecuteAsync()
     {
+        _logService.Log("[INFO] Incoming invoices process starting.");
         // Retrieve the new email containing invoices.
         var emails = await _emailsService.GetNewInvoiceEmailAsync();
         _logService.Log($"[INFO] {emails.Count()} new emails to analyze.");
@@ -67,6 +68,7 @@ public class ProcessIncomingInvoicesUsecase(
             _emailsRepository.Add(e);
             _logService.Log($"[CORE INFO] Email from {e.SenderAddress} added containing {e.Invoices.Count()} invoice(s).");
         }
+        _logService.Log("[INFO] Incoming invoices process done.");
     }
 
     private Supplier GetOrCreateSupplier(string supplierName)
@@ -101,8 +103,9 @@ public class ProcessIncomingInvoicesUsecase(
             invoice.Status = InvoiceStatus.Pending;
 
             // Retrieve department or fail.
-            invoice.PredictedDepartment = GetDepartment(aiResponse.DepartmentId)
+            var department = _departmentsRepository.GetById(aiResponse.DepartmentId)
                 ?? throw new DepartmentNotFoundException(aiResponse.DepartmentId);
+            invoice.PredictedDepartment = department;
             // Get or create the supplier.
             invoice.Supplier = GetOrCreateSupplier(aiResponse.SupplierName);
         }
@@ -115,6 +118,4 @@ public class ProcessIncomingInvoicesUsecase(
         return invoice;
     }
 
-    private Department GetDepartment(string id)
-        => _departmentsRepository.GetById(id) ?? throw new Exception($"Department with id {id} not found.");
 }
