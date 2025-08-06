@@ -1,7 +1,8 @@
 namespace AutoFactBDD.Mappers;
 
-public class InvocicesMapper : IMapper<Invoice, Entities.Invoice>
+public class InvocicesMapper : IInvoiceMapper
 {
+    public string EmailId { get; set; } = string.Empty;
     public Invoice ToCore(Entities.Invoice entity)
     {
         var i = new Invoice()
@@ -30,7 +31,16 @@ public class InvocicesMapper : IMapper<Invoice, Entities.Invoice>
     }
 
     public Entities.Invoice ToDb(Invoice entity)
-    {
-        throw new NotImplementedException();
-    }
+        => new()
+        {
+            Id = entity.Id,
+            Number = entity.Number,
+            ReceivedDate = entity.ReceivedDate,
+            Amount = entity.Amount,
+            Status = entity.Status,
+            DepartmentId = entity.PredictedDepartment?.Id,
+            SupplierId = entity.Supplier?.Id,
+            FilePath = entity.FilePath,
+            EmailId = EmailId
+        };
 }
