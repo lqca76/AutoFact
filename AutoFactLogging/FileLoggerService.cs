@@ -14,17 +14,13 @@ public class FileLoggerService : ILogService
     public void Log(string message)
     {
         string filePath = EnsureFileExists(_logFolder);
-        DateTime now = DateTime.UtcNow;
-        string content = $"[{now:dd/MM/yyyy HH:mm:ss}] {message}";
-        File.AppendAllText(filePath, content.Trim());
+        WriteFile(filePath, message);
     }
 
     public void LogError(string message)
     {
         string filePath = EnsureFileExists(_errorFolder);
-        DateTime now = DateTime.UtcNow;
-        string content = $"[{now:dd/MM/yyyy HH:mm:ss}] {message}";
-        File.AppendAllText(filePath, content);
+        WriteFile(filePath, message);
     }
 
     private static string EnsureFileExists(string folder)
@@ -33,7 +29,17 @@ public class FileLoggerService : ILogService
         string fileName = $"AutoFact_{now:ddMMyyyy}.log";
         string filePath = Path.Combine(folder, fileName);
         if (!File.Exists(filePath))
-            File.Create(filePath);
+        {
+            var stream = File.Create(filePath);
+            stream.Close();
+        }
         return filePath;
+    }
+
+    private static void WriteFile(string filePath, string message)
+    {
+        DateTime now = DateTime.UtcNow;
+        string content = $"[{now:dd/MM/yyyy HH:mm:ss}] {message}";
+        File.AppendAllText(filePath, content);
     }
 }
