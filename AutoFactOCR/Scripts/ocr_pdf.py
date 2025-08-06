@@ -46,6 +46,6 @@ for i, image in enumerate(images):
 if output_to_file:
     with open(output_file, "w", encoding="utf-8") as f:
         f.write("\n".join(results_text))
-    print(f"✅ Texte OCR sauvegardé dans : {output_file}")
+    print(f"Texte OCR sauvegardé dans : {output_file}")
 else:
     print("\n".join(results_text))
