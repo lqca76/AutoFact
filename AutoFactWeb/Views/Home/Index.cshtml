@@ -1,19 +1,102 @@
-@model AutoFactWeb.ViewModels.HomeViewModel;
+@model AutoFactWeb.ViewModels.HomeViewModel
+
 @{
     ViewData["Title"] = "Accueil";
 }
 
 <main>
     <sl-tab-group>
-        <sl-tab slot="nav" panel="pending">En attente</sl-tab>
+        <sl-tab slot="nav" panel="pending">
+            <sl-button variant="text">
+                En attente
+                <sl-badge pill>@Model.PendingCount</sl-badge>
+            </sl-button>
+        </sl-tab>
+        <sl-tab slot="nav" panel="error">
+            <sl-button variant="text">
+                Erreur
+                <sl-badge pill variant="danger">@Model.ErrorCount</sl-badge>
+            </sl-button>
+        </sl-tab>
+        <sl-tab slot="nav" panel="success">
+            <sl-button variant="text">
+                Validée
+                <sl-badge pill variant="success">@Model.ValidatedCount</sl-badge>
+            </sl-button>
+        </sl-tab>
 
         <sl-tab-panel name="pending">
+            <h1>Factures en attente (@Model.PendingCount)</h1>
+            @if (@Model.PendingCount == 0)
+            {
+                <p style="text-align:center;">Aucune facture en attente.</p>
+            }
+            else
+            {
 
-            <h1>
-                Factures en attente (@Model.Emails.Count())
-            </h1>
+                <table style="width:100%;">
+                    <thead>
+                        <tr>
+                            <th>Numéro</th>
+                            <th>Fournisseur</th>
+                            <th>Date de réception</th>
+                            <th>Montant</th>
+                            <th>Service</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
 
-            <table style="width:100%; ">
+                        @foreach (var email in Model.PendingEmails)
+                        {
+                            <tr>
+                                <td colspan="6" style="font-weight: bold; background-color: #f0f0f0;">
+                                    Sujet : @email.Subject;<br />
+                                    (@email.SenderAddress;)
+                                </td>
+                            </tr>
+                            @foreach (var invoice in email.Invoices.Where(i => i.Status ==
+                                                AutoFactCore.Enums.InvoiceStatus.Pending))
+                            {
+                                <tr>
+                                    <td>@invoice.Number</td>
+                                    <td>@(invoice.Supplier?.Name ?? "inconnu")</td>
+                                    <td>@invoice.ReceivedDate</td>
+                                    <td>@invoice.Amount</td>
+                                    <td>@(invoice.PredictedDepartment?.Label ?? "erreur")</td>
+                                    <td>
+                                        <sl-button>Valider</sl-button>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            }
+        </sl-tab-panel>
+
+        <sl-tab-panel name="error">
+            <h1>Factures en erreur (@Model.ErrorCount)</h1>
+
+            <ul>
+
+            @foreach(var email in Model.ErrorEmails) {
+                @foreach(var i in email.Invoices) {
+                    <li>
+                        <div>
+                            <p>@email.SenderAddress : @i.Number</p>
+                        </div>
+                    </li>
+
+                }
+            }
+            </ul>
+        </sl-tab-panel>
+
+        <sl-tab-panel name="success">
+            <h1>Factures validées (@Model.ValidatedCount)</h1>
+
+            <table style="width:100%;">
                 <thead>
                     <tr>
                         <th>Numéro</th>
@@ -21,40 +104,32 @@
                         <th>Date de réception</th>
                         <th>Montant</th>
                         <th>Service</th>
-                        <th></th>
                     </tr>
                 </thead>
-
                 <tbody>
-                    @foreach (var email in Model.Emails)
+                    @foreach (var email in Model.ValidatedEmails)
                     {
                         <tr>
-                            <td colspan="6" style="font-weight: bold; background-color: #f0f0f0;">
-                                Sujet : @email.Subject;
-                                <br>
+                            <td colspan="6" style="font-weight: bold; background-color: #e9ffe9;">
+                                Sujet : @email.Subject;<br />
                                 (@email.SenderAddress;)
                             </td>
                         </tr>
-
-                        @foreach (var invoice in email.Invoices)
+                        @foreach (var invoice in email.Invoices.Where(i => i.Status ==
+                                            AutoFactCore.Enums.InvoiceStatus.Validated))
                         {
                             <tr>
                                 <td>@invoice.Number</td>
                                 <td>@(invoice.Supplier?.Name ?? "inconnu")</td>
-                                <td>@(invoice.Amount)</td>
-                                <td>@(invoice.ReceivedDate)</td>
-                                <td>@(invoice.PredictedDepartment?.Label ?? "erreur")</td>
-                                <td>
-                                    @* Ajouter bonton validation / réfuter *@
-                                </td>
+                                <td>@invoice.ReceivedDate</td>
+                                <td>@invoice.Amount</td>
+                                <td>@(invoice.PredictedDepartment?.Label ?? "non renseigné")</td>
                             </tr>
                         }
                     }
                 </tbody>
             </table>
-
         </sl-tab-panel>
 
     </sl-tab-group>
-
 </main>

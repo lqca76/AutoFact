@@ -1,23 +1,20 @@
-using AutoFactCore.Services;
-using AutoFactMail;
-using AutoFactWeb.ViewModels;
 
 namespace AutoFactWeb.Controllers;
 
 public class HomeController : Controller
 {
-    private readonly InvoicesService _invoicesService;
+    private readonly AutoFactCore.Services.EmailsService _emailsService;
 
-    public HomeController(InvoicesService invoicesService)
+    public HomeController(AutoFactCore.Services.EmailsService emailsService)
     {
-        _invoicesService = invoicesService; 
+        _emailsService = emailsService;
     }
 
     // Home View
     [HttpGet]
     public IActionResult Index()
     {
-        var emails = _invoicesService.GetPendingInvoices();
+        var emails = _emailsService.GetAll();
         var vm = new HomeViewModel(emails);
         return View(vm);
     }
