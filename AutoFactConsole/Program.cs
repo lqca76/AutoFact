@@ -1,8 +1,4 @@
-﻿using System.Data.Common;
-using Microsoft.Exchange.WebServices.Data;
-using Microsoft.Extensions.Logging;
-
-var host = Host.CreateDefaultBuilder(args)
+﻿var host = Host.CreateDefaultBuilder(args)
     .ConfigureAppConfiguration((context, config) =>
     {
         config.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
