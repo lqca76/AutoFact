@@ -4,14 +4,16 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - AutoFact</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@@shoelace-style/shoelace@2.20.1/cdn/themes/light.css" />
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@@shoelace-style/shoelace@2.20.1/cdn/shoelace.js"></script>
 </head>
 <body>
     <header>
-        <nav>
+        <nav style="display: flex; align-items: center;">
             <h1>AutoFact</h1>
 
             <ul>
-                <a asp-action="Index" asp-controller="Home">En attente</a>
+                <a asp-action="Index" asp-controller="Home">Factures</a>
             </ul>
         </nav>
     </header>

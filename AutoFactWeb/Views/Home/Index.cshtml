@@ -4,45 +4,57 @@
 }
 
 <main>
-    <h1>
-        Factures en attente (@Model.Emails.Count())
-    </h1>
+    <sl-tab-group>
+        <sl-tab slot="nav" panel="pending">En attente</sl-tab>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Numéro</th>
-                <th>Fournisseur</th>
-                <th>Date de réception</th>
-                <th>Montant</th>
-                <th>Service</th>
-                <th></th>
-            </tr>
-        </thead>
+        <sl-tab-panel name="pending">
 
-        <tbody>
-            @foreach(var email in Model.Emails){
-                <tr>
-                    <td colspan="6" style="font-weight: bold; background-color: #f0f0f0;">
-                        Sujet : @email.Subject;
-                        <br>
-                        (@email.SenderAddress;)
-                    </td>
-                </tr>
+            <h1>
+                Factures en attente (@Model.Emails.Count())
+            </h1>
 
-                @foreach(var invoice in email.Invoices) {
+            <table style="width:100%; ">
+                <thead>
                     <tr>
-                        <td>@invoice.Number</td>
-                        <td>@(invoice.Supplier?.Name ?? "inconnu")</td>
-                        <td>@(invoice.Amount)</td>
-                        <td>@(invoice.ReceivedDate)</td>
-                        <td>@(invoice.PredictedDepartment?.Label ?? "erreur")</td>
-                        <td>
-                            @* Ajouter bonton validation / réfuter *@
-                        </td>
+                        <th>Numéro</th>
+                        <th>Fournisseur</th>
+                        <th>Date de réception</th>
+                        <th>Montant</th>
+                        <th>Service</th>
+                        <th></th>
                     </tr>
-                }
-            }
-        </tbody>
-    </table>
+                </thead>
+
+                <tbody>
+                    @foreach (var email in Model.Emails)
+                    {
+                        <tr>
+                            <td colspan="6" style="font-weight: bold; background-color: #f0f0f0;">
+                                Sujet : @email.Subject;
+                                <br>
+                                (@email.SenderAddress;)
+                            </td>
+                        </tr>
+
+                        @foreach (var invoice in email.Invoices)
+                        {
+                            <tr>
+                                <td>@invoice.Number</td>
+                                <td>@(invoice.Supplier?.Name ?? "inconnu")</td>
+                                <td>@(invoice.Amount)</td>
+                                <td>@(invoice.ReceivedDate)</td>
+                                <td>@(invoice.PredictedDepartment?.Label ?? "erreur")</td>
+                                <td>
+                                    @* Ajouter bonton validation / réfuter *@
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+
+        </sl-tab-panel>
+
+    </sl-tab-group>
+
 </main>
