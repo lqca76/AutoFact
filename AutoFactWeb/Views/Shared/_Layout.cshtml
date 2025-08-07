@@ -6,6 +6,15 @@
     <title>@ViewData["Title"] - AutoFact</title>
 </head>
 <body>
+    <header>
+        <nav>
+            <h1>AutoFact</h1>
+
+            <ul>
+                <a asp-action="Index" asp-controller="Home">En attente</a>
+            </ul>
+        </nav>
+    </header>
     <div class="">
         <main role="main">
             @RenderBody()

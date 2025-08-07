@@ -31,4 +31,10 @@ app.UseAuthorization();
 
 app.MapStaticAssets();
 
+app.MapControllerRoute(
+    name: "home",
+    pattern: "/",
+    defaults: new { controller = "Home", action = "Index" }
+);
+
 app.Run();

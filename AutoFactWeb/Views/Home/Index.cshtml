@@ -1,0 +1,48 @@
+@model AutoFactWeb.ViewModels.HomeViewModel;
+@{
+    ViewData["Title"] = "Accueil";
+}
+
+<main>
+    <h1>
+        Factures en attente (@Model.Emails.Count())
+    </h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Numéro</th>
+                <th>Fournisseur</th>
+                <th>Date de réception</th>
+                <th>Montant</th>
+                <th>Service</th>
+                <th></th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach(var email in Model.Emails){
+                <tr>
+                    <td colspan="6" style="font-weight: bold; background-color: #f0f0f0;">
+                        Sujet : @email.Subject;
+                        <br>
+                        (@email.SenderAddress;)
+                    </td>
+                </tr>
+
+                @foreach(var invoice in email.Invoices) {
+                    <tr>
+                        <td>@invoice.Number</td>
+                        <td>@(invoice.Supplier?.Name ?? "inconnu")</td>
+                        <td>@(invoice.Amount)</td>
+                        <td>@(invoice.ReceivedDate)</td>
+                        <td>@(invoice.PredictedDepartment?.Label ?? "erreur")</td>
+                        <td>
+                            @* Ajouter bonton validation / réfuter *@
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</main>
