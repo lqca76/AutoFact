@@ -53,3 +53,5 @@ Generated_Code/
 
 # Application configuration
 appsettings.*.json
+
+node_modules
