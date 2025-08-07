@@ -16,8 +16,7 @@
 
         services.AddSingleton<IEmailService, EmailsService>();
         services.AddSingleton<IOCRService, PythonOCRService>();
-        services.AddSingleton<IAIService, OllamaPredictor>();
-        // services.AddSingleton<ILogService>(_ => new FileLoggerService(config.LogFolder, config.ErrorLogFolder));
+        services.AddSingleton<ILogService>(_ => new FileLoggerService(config.LogFolder, config.ErrorLogFolder));
         services.AddSingleton<ILogService, ConsoleLogService>();
         services.AddSingleton<IFileService, FileService>();
 
@@ -68,6 +67,4 @@ using (var scope = host.Services.CreateScope())
 
 var usecase = host.Services.GetRequiredService<IProcessIncomingInvoicesUsecase>();
 
-Console.WriteLine("Début du processus de récupération des mails.");
 await usecase.ExecuteAsync();
-Console.WriteLine("Tache terminée.");
