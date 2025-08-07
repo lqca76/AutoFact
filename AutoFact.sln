@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoFactTest", "AutoFactTes
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoFactConsole", "AutoFactConsole\AutoFactConsole.csproj", "{777C900E-1508-4E2D-B4F4-379EC3CBEF5F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoFactConfiguration", "AutoFactConfiguration\AutoFactConfiguration.csproj", "{57483EFD-2ADC-41B6-963D-F538C27E2EE0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -66,5 +68,9 @@ Global
 		{777C900E-1508-4E2D-B4F4-379EC3CBEF5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{777C900E-1508-4E2D-B4F4-379EC3CBEF5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{777C900E-1508-4E2D-B4F4-379EC3CBEF5F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{57483EFD-2ADC-41B6-963D-F538C27E2EE0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{57483EFD-2ADC-41B6-963D-F538C27E2EE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{57483EFD-2ADC-41B6-963D-F538C27E2EE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{57483EFD-2ADC-41B6-963D-F538C27E2EE0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
