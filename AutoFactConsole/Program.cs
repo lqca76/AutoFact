@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System.Data.Common;
+using Microsoft.Exchange.WebServices.Data;
+using Microsoft.Extensions.Logging;
 
 var host = Host.CreateDefaultBuilder(args)
     .ConfigureAppConfiguration((context, config) =>
@@ -45,10 +47,28 @@ var host = Host.CreateDefaultBuilder(args)
         services.AddTransient<IMapper<Department, AutoFactBDD.Entities.Department>, DepartmentMapper>();
         services.AddTransient<IInvoiceMapper, InvocicesMapper>();
 
+        // Seeders
+        services.AddTransient<ISeeder, DepartmentsSeeder>();
+
         // UseCases
         services.AddTransient<IProcessIncomingInvoicesUsecase, ProcessIncomingInvoicesUsecase>();
 
     }).Build();
+
+// Database initialisation
+using (var scope = host.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var context = services.GetRequiredService<AutoFactBDD.AutoFactDbContext>();
+
+    // Apply migrations
+    context.Database.Migrate();
+
+    // Apply seeders
+    var seeders = services.GetServices<ISeeder>();
+    foreach (var seeder in seeders)
+        seeder.Seed();
+}
 
 var usecase = host.Services.GetRequiredService<IProcessIncomingInvoicesUsecase>();
 
