@@ -32,16 +32,19 @@ public static class ServiceCollectionExtension
         });
 
         // Repositories & Mappers
-        services.AddSingleton<ISupplierRepository, SuppliersRepository>();
+        services.AddScoped<ISupplierRepository, SuppliersRepository>();
         services.AddTransient<IMapper<Supplier, AutoFactBDD.Entities.Supplier>, SuppliersMapper>();
-        services.AddSingleton<IRepository<Email, string>, EmailsRepository>();
+        services.AddScoped<IRepository<Email, string>, EmailsRepository>();
         services.AddTransient<IMapper<Email, AutoFactBDD.Entities.Email>, EmailsMapper>();
-        services.AddSingleton<IRepository<Department, string>, DepartmentsRepository>();
+        services.AddScoped<IRepository<Department, string>, DepartmentsRepository>();
         services.AddTransient<IMapper<Department, AutoFactBDD.Entities.Department>, DepartmentMapper>();
         services.AddTransient<IInvoiceMapper, InvocicesMapper>();
 
         // Seeders
         services.AddTransient<ISeeder, DepartmentsSeeder>();
+
+        // Core services
+        services.AddTransient<InvoicesService>();
 
         return services;
     }
