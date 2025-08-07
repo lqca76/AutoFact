@@ -25,7 +25,7 @@ public class EmailsRepository : IRepository<Email, string>
     }
 
     public IEnumerable<Email> GetAll()
-        => _context.Emails.Select(_mapper.ToCore);
+        => _context.Emails.Include(e => e.Invoices).Select(_mapper.ToCore);
 
     public Email? GetById(string id)
     {
