@@ -15,7 +15,7 @@ public static class ServiceCollectionExtension
         services.AddSingleton<IAIConfiguration>(config);
         services.AddSingleton<IOCRConfiguration>(config);
 
-        services.AddSingleton<IEmailService, EmailsService>();
+        services.AddSingleton<IEmailService, AutoFactMail.EmailsService>();
         services.AddSingleton<IOCRService, PythonOCRService>();
         services.AddSingleton<ILogService>(_ => new FileLoggerService(config.LogFolder, config.ErrorLogFolder));
         services.AddSingleton<IFileService, FileService>();
@@ -45,6 +45,7 @@ public static class ServiceCollectionExtension
 
         // Core services
         services.AddTransient<InvoicesService>();
+        services.AddTransient<AutoFactCore.Services.EmailsService>();
 
         return services;
     }
