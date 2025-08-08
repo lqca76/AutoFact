@@ -18,9 +18,9 @@ public class ValidateInvoiceDepartmentUsecase : IValidateInvoiceDepartmentUsecas
         try
         {
             if(invoice is null)
-                throw new Exception($"Unable to find invoice with id {invoiceId}");
+                throw new ArgumentException($"Unable to find invoice with id {invoiceId}");
             if (invoice.PredictedDepartment is null)
-                throw new Exception("No department has been predicted for this invoice.");
+                throw new ArgumentNullException("PredictedDematment");
 
             // Update invoice status.
             invoice.Status = InvoiceStatus.Validated;
