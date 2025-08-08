@@ -6,13 +6,15 @@ public class DepartmentMapper : IMapper<Department, Entities.Department>
         => new()
         {
             Id = entity.Id,
-            Label = entity.Label
+            Label = entity.Label,
+            DocuWareId = entity.DocuWareId
         };
 
     public Entities.Department ToDb(Department entity)
         => new()
         {
             Id = entity.Id,
-            Label = entity.Label
+            Label = entity.Label,
+            DocuWareId = entity.DocuWareId
         };
 }
