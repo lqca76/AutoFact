@@ -10,4 +10,8 @@
     <PackageReference Include="DocuWare.Platform.ServerClient.Extensions" Version="12.11.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\AutoFactCore\AutoFactCore.csproj" />
+  </ItemGroup>
+
 </Project>
