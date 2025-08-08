@@ -23,6 +23,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoFactConsole", "AutoFact
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoFactConfiguration", "AutoFactConfiguration\AutoFactConfiguration.csproj", "{57483EFD-2ADC-41B6-963D-F538C27E2EE0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoFactDocuWare", "AutoFactDocuWare\AutoFactDocuWare.csproj", "{24E430E4-9DBA-472B-81D3-315A8EFEC2E8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -72,5 +74,9 @@ Global
 		{57483EFD-2ADC-41B6-963D-F538C27E2EE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{57483EFD-2ADC-41B6-963D-F538C27E2EE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{57483EFD-2ADC-41B6-963D-F538C27E2EE0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{24E430E4-9DBA-472B-81D3-315A8EFEC2E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24E430E4-9DBA-472B-81D3-315A8EFEC2E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{24E430E4-9DBA-472B-81D3-315A8EFEC2E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24E430E4-9DBA-472B-81D3-315A8EFEC2E8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
