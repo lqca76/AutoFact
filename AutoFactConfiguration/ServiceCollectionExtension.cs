@@ -16,6 +16,7 @@ public static class ServiceCollectionExtension
         services.AddSingleton<IExchangeConfiguration>(config);
         services.AddSingleton<IAIConfiguration>(config);
         services.AddSingleton<IOCRConfiguration>(config);
+        services.AddSingleton<IDocuwareConfiguration>(config);
 
         services.AddSingleton<IEmailService, AutoFactMail.EmailsService>();
         services.AddSingleton<IOCRService, PythonOCRService>();
@@ -50,6 +51,8 @@ public static class ServiceCollectionExtension
         services.AddTransient<InvoicesService>();
         services.AddTransient<AutoFactCore.Services.EmailsService>();
 
+        // Docuware
+        services.AddScoped<IDocuwareService, DocuwareService>();
         return services;
     }
 
