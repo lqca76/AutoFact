@@ -65,7 +65,7 @@
                                     <td>@invoice.Amount</td>
                                     <td>@(invoice.PredictedDepartment?.Label ?? "erreur")</td>
                                     <td>
-                                        <sl-button>Valider</sl-button>
+                                        <sl-button class="btn-validate" data-invoice-id="@invoice.Id" variant="success">Valider</sl-button>
                                     </td>
                                 </tr>
                             }
@@ -132,4 +132,42 @@
         </sl-tab-panel>
 
     </sl-tab-group>
+
+    @section Scripts {
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const buttons = document.querySelectorAll(".btn-validate");
+
+                buttons.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const invoiceId = btn.getAttribute('data-invoice-id');
+                        validateInvoice(invoiceId);
+                    });
+                });
+            });
+            async function validateInvoice(invoiceId) {
+                try {
+                    // TODO: Set loading state
+                    const response = await fetch("/validate-invoice", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ invoiceId, validate: true })
+                    });
+
+                    const result = await response.json();
+
+                    // TODO: Add toast notification and set state as error or validated
+                    if(response.ok) {
+                        console.log("Succès :", result);
+                    } else {
+                        console.error("Erreur :", result);
+                    }
+                } catch(error) {
+                    console.error('Erreur réseau ou inattendue :', error);
+                }
+            }
+        </script>
+    }
 </main>
