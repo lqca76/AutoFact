@@ -10,7 +10,7 @@ public class DocuwareService : IDocuwareService
         _logsService = logService;
         try
         {
-            _connection = ServiceConnection.Create(new(configuration.BaseURI), configuration.Username, configuration.Password);
+            _connection = ServiceConnection.Create(new Uri(configuration.DocuwareBaseURI), configuration.DocuwareUsername, configuration.DocuwarePassword);
             if (_connection.Organizations.Length == 0)
                 throw new Exception("No organisation for the given connection.");
             _organization = _connection.Organizations[0];

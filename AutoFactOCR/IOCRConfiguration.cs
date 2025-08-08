@@ -9,6 +9,6 @@ public interface IOCRConfiguration
     /// <summary>
     /// Gets the absolute path to the Python interpreter used to execute the OCR script.
     /// </summary>
-    string PythonPath { get; }
-    string ScriptPath { get; }
+    string OCRPythonPath { get; }
+    string OCRScriptPath { get; }
 }

@@ -1,64 +1,34 @@
 namespace AutoFactConfiguration;
-public class GlobalConfiguration : ICoreConfiguration, IExchangeConfiguration, IAIConfiguration, IOCRConfiguration
+
+public class GlobalConfiguration : IDocuwareConfiguration, ICoreConfiguration, IExchangeConfiguration, IAIConfiguration, IOCRConfiguration
 {
+    // Docuware
+    public string DocuwareBaseURI { get; set; } = string.Empty;
+    public string DocuwareUsername { get; set; } = string.Empty;
+    public string DocuwarePassword { get; set; } = string.Empty;
+
+    // Core
     public string PDFPath { get; set; } = string.Empty;
 
-    public ExchangeSettings Exchange { get; set; } = new();
-    public AISettings AI { get; set; } = new();
-    public OCRSettings OCR { get; set; } = new();
-    public LoggingSettings Logging { get; set; } = new();
-    public DatabaseSettings Database { get; set; } = new();
+    // Exchange
+    public string ExchangeUsername { get; set; } = string.Empty;
+    public string ExchangePassword { get; set; } = string.Empty;
+    public string ExchangeUrl { get; set; } = string.Empty;
 
-    // Pour compatibilité avec les interfaces
-    public string Username { get => Exchange.Username; set { } }
-    public string Password { get => Exchange.Password; set { } }
-    public string Domain { get => Exchange.Domain; set { } }
-    public Uri EwsUrl { get => new(Exchange.Url); set { } }
+    // AI
+    public string AIModel { get; set; } = string.Empty;
 
-    public string PythonPath => OCR.PythonPath;
-    public string Model => AI.Model;
-    public string AIUrl => AI.Url;
+    public string AIUrl { get; set; } = string.Empty;
 
-    public string LogFolder => Logging.Folder;
-    public string ErrorLogFolder => Logging.ErrorFolder;
+    // OCR
+    public string OCRPythonPath { get; set; } = string.Empty;
 
-    public string ConnectionString => Database.ConnectionString;
+    public string OCRScriptPath { get; set; } = string.Empty;
 
-    // Ignorer ce champ si non utilisé
-    public string AIModel => AI.Model;
+    // Database
+    public string DBConnectionString { get; set; } = string.Empty;
 
-    public string ScriptPath => OCR.ScriptPath;
-}
-
-
-// Sous-objets
-public class ExchangeSettings
-{
-    public string Username { get; set; } = string.Empty;
-    public string Password { get; set; } = string.Empty;
-    public string Domain { get; set; } = string.Empty;
-    public string Url { get; set; } = string.Empty;
-}
-
-public class AISettings
-{
-    public string Model { get; set; } = string.Empty;
-    public string Url { get; set; } = string.Empty;
-}
-
-public class OCRSettings
-{
-    public string PythonPath { get; set; } = string.Empty;
-    public string ScriptPath { get; set; } = string.Empty;
-}
-
-public class LoggingSettings
-{
-    public string Folder { get; set; } = string.Empty;
-    public string ErrorFolder { get; set; } = string.Empty;
-}
-
-public class DatabaseSettings
-{
-    public string ConnectionString { get; set; } = string.Empty;
+    // Logging
+    public string LogFolder { get; set; } = string.Empty;
+    public string ErrorLogFolder { get; set; } = string.Empty;
 }

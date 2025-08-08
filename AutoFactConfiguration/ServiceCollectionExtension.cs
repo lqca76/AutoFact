@@ -27,7 +27,7 @@ public static class ServiceCollectionExtension
         services.AddDbContext<AutoFactBDD.AutoFactDbContext>(options =>
         {
             options.UseMySql(
-                config.ConnectionString,
+                config.DBConnectionString,
                 new MySqlServerVersion(new Version(8, 0, 34))
             );
             options.LogTo(_ => { }, LogLevel.None);

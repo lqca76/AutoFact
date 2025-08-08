@@ -8,8 +8,8 @@ public class PythonOCRService(
     ILogService logService
 ) : IOCRService
 {
-    private readonly string _pythonPath = configuration.PythonPath;
-    private readonly string _scriptPath = configuration.ScriptPath;
+    private readonly string _pythonPath = configuration.OCRPythonPath;
+    private readonly string _scriptPath = configuration.OCRScriptPath;
     private readonly ILogService _logService = logService;
 
     /// <inheritdoc />

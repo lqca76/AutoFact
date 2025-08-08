@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-namespace AutoFactLogging;
+﻿namespace AutoFactLogging;
 
 public class FileLoggerService : ILogService
 {

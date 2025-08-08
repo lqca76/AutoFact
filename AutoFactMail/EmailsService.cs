@@ -19,8 +19,8 @@ public class EmailsService : IEmailService
         // Instanciate a new Exchange service.
         _service = new(ExchangeVersion.Exchange2013)
         {
-            Credentials = new WebCredentials(configuration.Username, configuration.Password),
-            Url = configuration.EwsUrl
+            Credentials = new WebCredentials(configuration.ExchangeUsername, configuration.ExchangePassword),
+            Url = new(configuration.ExchangeUrl)
         };
 
         // Default folder to store the last fetch date.

@@ -15,3 +15,4 @@ global using AutoFactBDD.Seeders;
 global using Microsoft.Extensions.Logging;
 global using AutoFactLogging;
 global using AutoFactCore.Services;
+global using AutoFactDocuware;
