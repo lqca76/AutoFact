@@ -8,7 +8,9 @@ public static class ServiceCollectionExtension
         var configSection = configuration.GetSection("AutoFact");
         var config = configSection.Get<GlobalConfiguration>()!;
 
+        // Core UseCases
         services.AddTransient<IProcessIncomingInvoicesUsecase, ProcessIncomingInvoicesUsecase>();
+        services.AddTransient<IValidateInvoiceDepartmentUsecase, ValidateInvoiceDepartmentUsecase>();
 
         services.AddSingleton<ICoreConfiguration>(config);
         services.AddSingleton<IExchangeConfiguration>(config);
@@ -39,6 +41,7 @@ public static class ServiceCollectionExtension
         services.AddScoped<IRepository<Department, string>, DepartmentsRepository>();
         services.AddTransient<IMapper<Department, AutoFactBDD.Entities.Department>, DepartmentMapper>();
         services.AddTransient<IInvoiceMapper, InvocicesMapper>();
+        services.AddTransient<IInvoicesRepository, InvoicesRepository>();
 
         // Seeders
         services.AddTransient<ISeeder, DepartmentsSeeder>();
