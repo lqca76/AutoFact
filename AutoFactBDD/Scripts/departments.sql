@@ -1,0 +1,15 @@
+INSERT INTO departments (id, label, docuware_id) VALUES
+('PHARMA', 'Service de Pharmacie', NULL),
+('PROTHESES', 'Service de Prothèses', NULL),
+('BLOC', 'Service de Bloc', NULL),
+('BIOMED', 'Service Biomédical', NULL),
+('CARDIO', 'Service de Cardiologie', NULL),
+('CUISINE', 'Service de Cuisine', NULL),
+('ACHATS', 'Service des Achats généraux', NULL),
+('INFORMATIQUE', 'Service Informatique', NULL),
+('FORMATION', 'Service de Formation', NULL),
+('PRESTATIONS', 'Service de Prestations de services', NULL),
+('HONORAIRES', 'Service d''Honoraires', NULL),
+('TECHNIQUE', 'Service Techniques, Énergie et Entretien', NULL),
+('CONFORMITE', 'Service de Mise en conformité', NULL),
+('LOCATION', 'Service de Location (financière, loyer, divers)', NULL);
