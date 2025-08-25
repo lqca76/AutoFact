@@ -34,7 +34,6 @@ mysql_data/
 # Logs
 logs/
 *.log
-*.sql
 
 # System files
 .DS_Store
