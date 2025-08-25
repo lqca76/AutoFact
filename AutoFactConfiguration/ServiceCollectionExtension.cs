@@ -51,8 +51,9 @@ public static class ServiceCollectionExtension
         services.AddTransient<InvoicesService>();
         services.AddTransient<AutoFactCore.Services.EmailsService>();
 
-        // Docuware
-        services.AddScoped<IDocumentStorageService, DocuwareService>();
+        // PDF Storage
+        // services.AddScoped<IDocumentStorageService, DocuwareService>();
+        services.AddScoped<IDocumentStorageService, FileSystemStorageService>();
         return services;
     }
 

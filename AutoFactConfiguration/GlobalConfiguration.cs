@@ -1,6 +1,6 @@
 namespace AutoFactConfiguration;
 
-public class GlobalConfiguration : IDocuwareConfiguration, ICoreConfiguration, IExchangeConfiguration, IAIConfiguration, IOCRConfiguration
+public class GlobalConfiguration : IDocuwareConfiguration, ICoreConfiguration, IExchangeConfiguration, IAIConfiguration, IOCRConfiguration, IFileSystemStorageServiceConfiguration
 {
     // Docuware
     public string DocuwareBaseURI { get; set; } = string.Empty;
@@ -31,4 +31,5 @@ public class GlobalConfiguration : IDocuwareConfiguration, ICoreConfiguration, I
     // Logging
     public string LogFolder { get; set; } = string.Empty;
     public string ErrorLogFolder { get; set; } = string.Empty;
+    public string PDFDestFolder { get; set; } = string.Empty;
 }
