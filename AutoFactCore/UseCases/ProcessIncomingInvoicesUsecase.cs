@@ -87,8 +87,10 @@ public class ProcessIncomingInvoicesUsecase(
         var invoice = new Invoice();
         try
         {
-            // Initialize invoice from attachment.
-            string tempPath = Path.GetTempPath();
+            // Store invoice into temp folder
+            string tempPath = Path.Combine(Path.GetTempPath(), "AutoFact");
+            if (!Directory.Exists(tempPath))
+                Directory.CreateDirectory(tempPath);
             string path = Path.Combine(tempPath, attachment.Name);
             await _fileService.SaveFileAsync(attachment.Content, path);
             invoice.Number = attachment.Name;
