@@ -27,7 +27,7 @@ public class ValidateInvoiceDepartmentUsecase : IValidateInvoiceDepartmentUsecas
             _invoicesRepository.Update(invoice);
 
             // Upload to DocuWare.
-            await _docuwareSerivce.Upload(invoice);
+            await _docuwareSerivce.Store(invoice);
 
             // Return success message.
             return new ValidateInvoiceResultDTO(true, invoice, "Invoice validated and uploaded successfully");

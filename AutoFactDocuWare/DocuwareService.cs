@@ -20,7 +20,7 @@ public class DocuwareService : IDocumentStorageService
             throw new Exception($"Unable to connect to DocuWare : {ex.Message}");
         }
     }
-    public async Task Upload(Invoice invoice)
+    public async Task Store(Invoice invoice)
     {
         try
         {
