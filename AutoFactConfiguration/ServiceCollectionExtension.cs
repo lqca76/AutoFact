@@ -17,6 +17,7 @@ public static class ServiceCollectionExtension
         services.AddSingleton<IAIConfiguration>(config);
         services.AddSingleton<IOCRConfiguration>(config);
         services.AddSingleton<IDocuwareConfiguration>(config);
+        services.AddSingleton<IFileSystemStorageServiceConfiguration>(config);
 
         services.AddSingleton<IEmailService, AutoFactMail.EmailsService>();
         services.AddSingleton<IOCRService, PythonOCRService>();
@@ -48,7 +49,7 @@ public static class ServiceCollectionExtension
         services.AddTransient<ISeeder, DepartmentsSeeder>();
 
         // Core services
-        services.AddTransient<InvoicesService>();
+        // services.AddTransient<InvoicesService>();
         services.AddTransient<AutoFactCore.Services.EmailsService>();
 
         // PDF Storage
