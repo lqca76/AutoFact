@@ -1,6 +1,6 @@
 namespace AutoFactDocuware;
 
-public class DocuwareService : IDocuwareService
+public class DocuwareService : IDocumentStorageService
 {
     private readonly ServiceConnection _connection;
     private readonly Organization _organization;

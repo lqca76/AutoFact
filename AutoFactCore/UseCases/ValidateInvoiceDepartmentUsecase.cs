@@ -3,9 +3,9 @@ namespace AutoFactCore.UseCases;
 public class ValidateInvoiceDepartmentUsecase : IValidateInvoiceDepartmentUsecase
 {
     private readonly IInvoicesRepository _invoicesRepository;
-    private readonly IDocuwareService _docuwareSerivce;
+    private readonly IDocumentStorageService _docuwareSerivce;
     private readonly ILogService _logService;
-    public ValidateInvoiceDepartmentUsecase(IInvoicesRepository invoicesRepository, IDocuwareService docuwareService, ILogService logService)
+    public ValidateInvoiceDepartmentUsecase(IInvoicesRepository invoicesRepository, IDocumentStorageService docuwareService, ILogService logService)
     {
         _invoicesRepository = invoicesRepository;
         _docuwareSerivce = docuwareService;

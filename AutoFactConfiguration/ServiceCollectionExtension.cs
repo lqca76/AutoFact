@@ -52,7 +52,7 @@ public static class ServiceCollectionExtension
         services.AddTransient<AutoFactCore.Services.EmailsService>();
 
         // Docuware
-        services.AddScoped<IDocuwareService, DocuwareService>();
+        services.AddScoped<IDocumentStorageService, DocuwareService>();
         return services;
     }
 

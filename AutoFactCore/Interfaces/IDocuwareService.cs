@@ -1,6 +1,6 @@
 namespace AutoFactCore.Interfaces;
 
-public interface IDocuwareService
+public interface IDocumentStorageService
 {
     Task Upload(Invoice invoice);
 }
