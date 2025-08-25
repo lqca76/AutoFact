@@ -23,7 +23,7 @@ public class ValidateInvoiceDepartmentUsecase : IValidateInvoiceDepartmentUsecas
                 throw new ArgumentNullException("PredictedDematment");
 
             // Update invoice status.
-            invoice.Status = InvoiceStatus.Validated;
+            // invoice.Status = InvoiceStatus.Validated;
             _invoicesRepository.Update(invoice);
 
             // Upload to DocuWare.

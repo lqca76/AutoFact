@@ -6,10 +6,10 @@
 
 <main>
     <sl-tab-group>
-        <sl-tab slot="nav" panel="pending">
+        <sl-tab slot="nav" panel="processed">
             <sl-button variant="text">
-                En attente
-                <sl-badge pill>@Model.PendingCount</sl-badge>
+                Traitée
+                <sl-badge pill>@Model.ProcessedCount</sl-badge>
             </sl-button>
         </sl-tab>
         <sl-tab slot="nav" panel="error">
@@ -18,18 +18,12 @@
                 <sl-badge pill variant="danger">@Model.ErrorCount</sl-badge>
             </sl-button>
         </sl-tab>
-        <sl-tab slot="nav" panel="success">
-            <sl-button variant="text">
-                Validée
-                <sl-badge pill variant="success">@Model.ValidatedCount</sl-badge>
-            </sl-button>
-        </sl-tab>
 
-        <sl-tab-panel name="pending">
-            <h1>Factures en attente (@Model.PendingCount)</h1>
-            @if (@Model.PendingCount == 0)
+        <sl-tab-panel name="processed">
+            <h1>Factures traitées (@Model.ProcessedCount)</h1>
+            @if (@Model.ProcessedCount == 0)
             {
-                <p style="text-align:center;">Aucune facture en attente.</p>
+                <p style="text-align:center;">Aucune facture traitée.</p>
             }
             else
             {
@@ -42,33 +36,18 @@
                             <th>Date de réception</th>
                             <th>Montant</th>
                             <th>Service</th>
-                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
-
-                        @foreach (var email in Model.PendingEmails)
+                        @foreach (var invoice in Model.ProcessedInvoices)
                         {
                             <tr>
-                                <td colspan="6" style="font-weight: bold; background-color: #f0f0f0;">
-                                    Sujet : @email.Subject;<br />
-                                    (@email.SenderAddress;)
-                                </td>
+                                <td>@invoice.Number</td>
+                                <td>@(invoice.Supplier?.Name ?? "Fournisseur inconnu")</td>
+                                <td>@invoice.ReceivedDate.ToString("dd/MM/yyyy") </td>
+                                <td>@invoice.Amount</td>
+                                <td>@(invoice.PredictedDepartment?.Label ?? "")</td>
                             </tr>
-                            @foreach (var invoice in email.Invoices.Where(i => i.Status ==
-                                                AutoFactCore.Enums.InvoiceStatus.Pending))
-                            {
-                                <tr>
-                                    <td>@invoice.Number</td>
-                                    <td>@(invoice.Supplier?.Name ?? "inconnu")</td>
-                                    <td>@invoice.ReceivedDate</td>
-                                    <td>@invoice.Amount</td>
-                                    <td>@(invoice.PredictedDepartment?.Label ?? "erreur")</td>
-                                    <td>
-                                        <sl-button class="btn-validate" data-invoice-id="@invoice.Id" variant="success">Valider</sl-button>
-                                    </td>
-                                </tr>
-                            }
                         }
                     </tbody>
                 </table>
@@ -77,97 +56,25 @@
 
         <sl-tab-panel name="error">
             <h1>Factures en erreur (@Model.ErrorCount)</h1>
-
-            <ul>
-
-            @foreach(var email in Model.ErrorEmails) {
-                @foreach(var i in email.Invoices) {
-                    <li>
-                        <div>
-                            <p>@email.SenderAddress : @i.Number</p>
-                        </div>
-                    </li>
-
-                }
-            }
-            </ul>
-        </sl-tab-panel>
-
-        <sl-tab-panel name="success">
-            <h1>Factures validées (@Model.ValidatedCount)</h1>
-
-            <table style="width:100%;">
+            <table>
                 <thead>
                     <tr>
                         <th>Numéro</th>
-                        <th>Fournisseur</th>
-                        <th>Date de réception</th>
-                        <th>Montant</th>
-                        <th>Service</th>
+                        <th>Chemin</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var email in Model.ValidatedEmails)
-                    {
+                    @foreach(var invoice in Model.FailedInvoices) {
                         <tr>
-                            <td colspan="6" style="font-weight: bold; background-color: #e9ffe9;">
-                                Sujet : @email.Subject;<br />
-                                (@email.SenderAddress;)
-                            </td>
+                            <td>@invoice.Number</td>
+                            <td>@invoice.FilePath</td>
                         </tr>
-                        @foreach (var invoice in email.Invoices.Where(i => i.Status ==
-                                            AutoFactCore.Enums.InvoiceStatus.Validated))
-                        {
-                            <tr>
-                                <td>@invoice.Number</td>
-                                <td>@(invoice.Supplier?.Name ?? "inconnu")</td>
-                                <td>@invoice.ReceivedDate</td>
-                                <td>@invoice.Amount</td>
-                                <td>@(invoice.PredictedDepartment?.Label ?? "non renseigné")</td>
-                            </tr>
-                        }
                     }
                 </tbody>
             </table>
+
         </sl-tab-panel>
 
     </sl-tab-group>
 
-    @section Scripts {
-        <script>
-            document.addEventListener('DOMContentLoaded', () => {
-                const buttons = document.querySelectorAll(".btn-validate");
-
-                buttons.forEach(btn => {
-                    btn.addEventListener('click', () => {
-                        const invoiceId = btn.getAttribute('data-invoice-id');
-                        validateInvoice(invoiceId);
-                    });
-                });
-            });
-            async function validateInvoice(invoiceId) {
-                try {
-                    // TODO: Set loading state
-                    const response = await fetch("/validate-invoice", {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ invoiceId, validate: true })
-                    });
-
-                    const result = await response.json();
-
-                    // TODO: Add toast notification and set state as error or validated
-                    if(response.ok) {
-                        console.log("Succès :", result);
-                    } else {
-                        console.error("Erreur :", result);
-                    }
-                } catch(error) {
-                    console.error('Erreur réseau ou inattendue :', error);
-                }
-            }
-        </script>
-    }
 </main>
