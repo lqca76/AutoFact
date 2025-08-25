@@ -53,11 +53,7 @@ public class ProcessIncomingInvoicesUsecase(
             {
                 var invoice = await ProcessAttachmentAsync(attachment);
                 if (invoice is not null)
-                {
-                    string filePath = await _storageService.Store(invoice);
-                    invoice.FilePath = filePath;
                     invoices.Add(invoice);
-                }
             }
             // Don't add email without invoices.
             if (invoices.Count == 0)
@@ -85,30 +81,35 @@ public class ProcessIncomingInvoicesUsecase(
     private async Task<Invoice?> ProcessAttachmentAsync(EmailAttachmentDTO attachment)
     {
         var invoice = new Invoice();
+        string tempPath = Path.Combine(Path.GetTempPath(), "AutoFact");
+        string path = Path.Combine(tempPath, attachment.Name);
         try
         {
-            // Store invoice into temp folder
-            string tempPath = Path.Combine(Path.GetTempPath(), "AutoFact");
+            // Create temp folder is needed
             if (!Directory.Exists(tempPath))
                 Directory.CreateDirectory(tempPath);
-            string path = Path.Combine(tempPath, attachment.Name);
+
+            // Store invoice into temp folder
             await _fileService.SaveFileAsync(attachment.Content, path);
+
+            // Set base invoice data
             invoice.Number = attachment.Name;
             invoice.FilePath = path;
 
             // Extract text from the PDF.
             string pdfContent = await _ocrService.ExctractTextAsync(invoice.FilePath)
                 ?? throw new OCRExtractionFailedException(invoice.FilePath);
+
             // Skip non-invoice documents.
             if (!pdfContent.Contains("Facture", StringComparison.CurrentCultureIgnoreCase))
                 return null;
+
             // Send content to the AI service for prediction.
             var aiResponse = await _aiService.PredictAsync(pdfContent)
                 ?? throw new AiPredictionFailedException(path);
 
             // Set extracted invoice data.
             invoice.Amount = aiResponse.Amount;
-            // invoice.Status = InvoiceStatus.Pending;
 
             // Retrieve department or fail.
             var department = _departmentsRepository.GetById(aiResponse.DepartmentId)
@@ -116,11 +117,27 @@ public class ProcessIncomingInvoicesUsecase(
             invoice.PredictedDepartment = department;
             // Get or create the supplier.
             invoice.Supplier = GetOrCreateSupplier(aiResponse.SupplierName);
+
+            // Store file
+            invoice.FilePath = await _storageService.Store(invoice);
+
+            // Set status as processed
+            invoice.Status = InvoiceStatus.Processed;
         }
         catch (Exception ex)
         {
             _logService.LogError($"[CORE ERROR] Error while processing the invoice {attachment.Name} : {ex.Message}");
             invoice.Status = InvoiceStatus.Error;
+        }
+        finally
+        {
+            try { 
+                if (File.Exists(path))
+                    File.Delete(path);
+            } catch (Exception ex)
+            {
+                _logService.LogError($"[CORE WARN] Could not delete temp file {path}: {ex.Message}");
+            }
         }
 
         return invoice;
