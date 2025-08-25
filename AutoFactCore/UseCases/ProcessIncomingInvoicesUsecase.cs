@@ -19,7 +19,8 @@ public class ProcessIncomingInvoicesUsecase(
     IRepository<Department, string> departmentsRepository,
     ILogService logService,
     ISupplierRepository supplierRepository,
-    ICoreConfiguration configuration
+    ICoreConfiguration configuration,
+    IDocumentStorageService storageService
 ) : IProcessIncomingInvoicesUsecase
 {
     private readonly IEmailService _emailsService = emailService;
@@ -31,6 +32,7 @@ public class ProcessIncomingInvoicesUsecase(
     private readonly ILogService _logService = logService;
     private readonly ISupplierRepository _supplierRepository = supplierRepository;
     private readonly ICoreConfiguration _configuration = configuration;
+    private readonly IDocumentStorageService _storageService = storageService;
     /// <summary>
     /// Executes the invoice processing use case: retrieves emails,
     /// processes attachments, uses OCR and AI, and stores results in the database.
@@ -51,13 +53,17 @@ public class ProcessIncomingInvoicesUsecase(
             {
                 var invoice = await ProcessAttachmentAsync(attachment);
                 if (invoice is not null)
+                {
+                    string filePath = await _storageService.Store(invoice);
+                    invoice.FilePath = filePath;
                     invoices.Add(invoice);
+                }
             }
             // Don't add email without invoices.
             if (invoices.Count == 0)
                 continue;
             // Create email in database.
-                Email e = new()
+            Email e = new()
             {
                 Id = email.Id,
                 SenderAddress = email.SenderAddress,
@@ -82,8 +88,8 @@ public class ProcessIncomingInvoicesUsecase(
         try
         {
             // Initialize invoice from attachment.
-            string folder = _configuration.PDFPath;
-            string path = Path.Combine(folder, attachment.Name);
+            string tempPath = Path.GetTempPath();
+            string path = Path.Combine(tempPath, attachment.Name);
             await _fileService.SaveFileAsync(attachment.Content, path);
             invoice.Number = attachment.Name;
             invoice.FilePath = path;
@@ -100,7 +106,7 @@ public class ProcessIncomingInvoicesUsecase(
 
             // Set extracted invoice data.
             invoice.Amount = aiResponse.Amount;
-            invoice.Status = InvoiceStatus.Pending;
+            // invoice.Status = InvoiceStatus.Pending;
 
             // Retrieve department or fail.
             var department = _departmentsRepository.GetById(aiResponse.DepartmentId)

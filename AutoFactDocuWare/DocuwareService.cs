@@ -20,7 +20,7 @@ public class DocuwareService : IDocumentStorageService
             throw new Exception($"Unable to connect to DocuWare : {ex.Message}");
         }
     }
-    public async Task Store(Invoice invoice)
+    public async Task<string> Store(Invoice invoice)
     {
         try
         {
@@ -37,7 +37,8 @@ public class DocuwareService : IDocumentStorageService
                     // TODO: add file cabinet indexes
                 }
             };
-            await fileCabinet.UploadDocumentAsync(indexData, new FileInfo(invoice.FilePath));
+            var doc = await fileCabinet.UploadDocumentAsync(indexData, new FileInfo(invoice.FilePath));
+            return doc.Content.FileDownloadRelationLink;
         }
         catch (Exception ex)
         {

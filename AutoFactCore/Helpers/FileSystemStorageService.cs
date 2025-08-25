@@ -11,7 +11,7 @@ public class FileSystemStorageService : IDocumentStorageService
     {
         _config = config;
     }
-    public Task Store(Invoice invoice)
+    public Task<string> Store(Invoice invoice)
     {
         string path;
         if(invoice.Status == InvoiceStatus.Error || invoice.PredictedDepartment is null)
@@ -29,6 +29,6 @@ public class FileSystemStorageService : IDocumentStorageService
 
         File.Move(invoice.FilePath, destPath);
 
-        return Task.CompletedTask;
+        return Task.FromResult(destPath);
     }
 }
