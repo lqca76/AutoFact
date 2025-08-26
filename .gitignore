@@ -54,3 +54,4 @@ Generated_Code/
 appsettings.*.json
 
 node_modules
+__pycache__
