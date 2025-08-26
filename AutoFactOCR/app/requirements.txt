@@ -1,0 +1,6 @@
+fastapi
+uvicorn
+easyocr
+pdf2image
+numpy
+pydantic
