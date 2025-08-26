@@ -1,0 +1,13 @@
+**/.git
+**/bin
+**/obj
+**/node_modules
+**/.vs
+**/.vscode
+**/TestResults
+**/publish
+Dockerfile*
+.dockerignore
+.gitignore
+README.md
+LICENSE
