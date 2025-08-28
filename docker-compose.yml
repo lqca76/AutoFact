@@ -1,7 +1,8 @@
 services:
   web:
     build:
-      context: ./AutoFactWeb
+      context: .
+      dockerfile: ./Web.Dockerfile
     ports:
       - "8080:8080"
       - "443:443"
@@ -9,29 +10,30 @@ services:
       - ASPNETCORE_ENVIRONMENT=Production
     volumes:
       - ./AutoFactConfiguration/appsettings.Production.json:/app/appsettings.Production.json
-    depends_on: 
+    depends_on:
       - db
   db:
     image: mysql:8.3
-    environment: 
+    environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: autofact
     ports:
       - "3306:3306"
-    volumes:  
+    volumes:
       - "./AutoFactBDD/Scripts/autofact.sql:/docker-entrypoint-initdb.d/1.sql"
       - "./AutoFactBDD/Scripts/depatments.sql:/docker-entrypoint-initdb.d/2.sql"
   ai:
-    build: 
+    build:
       context: ./AutoFactAI
     container_name: ollama-server
     ports:
       - "11434:11434"
     restart: always
   ocr:
-    build: 
-      context: ./AutoFactOCT/app
+    build:
+      context: ./AutoFactOCR/app
     container_name: ocr-server
-    ports: 
+    ports:
       - "8000:8000"
     restart: always
+

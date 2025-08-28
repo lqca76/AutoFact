@@ -1,5 +1,5 @@
 # Image Python officielle
-FROM python:3.11-slim
+FROM python:3.13-slim
 
 # Empêche Python d'écrire des fichiers .pyc et force flush des logs
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -20,6 +20,7 @@ WORKDIR /app
 
 # Copier requirements et installer
 COPY requirements.txt .
+
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copier tout le projet
